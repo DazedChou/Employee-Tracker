@@ -31,7 +31,17 @@ function init() {
                     console.log('\n','\n',cTable.getTable(results),'\n');
                 });
                 init();
-            } 
+            } else if (response.choice == 'View all roles'){
+                db.query(`SELECT * FROM roles`, function (err, results) {
+                    console.log('\n','\n',cTable.getTable(results),'\n');
+                });
+                init();
+            }else if (response.choice == 'View all employees'){
+                db.query(`SELECT * FROM employees`, function (err, results) {
+                    console.log('\n','\n',cTable.getTable(results),'\n');
+                });
+                init();
+            }
 
         });
 
