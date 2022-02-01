@@ -3,20 +3,20 @@ CREATE DATABASE employee_db;
 
 USE employee_db;
 
-DROP TABLE IF EXISTS department;
-CREATE TABLE departent (
+CREATE TABLE departments(
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  dept_name VARCHAR(30) NOT NULL,
+  department VARCHAR(30) NOT NULL
 );
+
 
 DROP TABLE IF EXISTS roles;
 CREATE TABLE roles (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(30) NOT NULL,
   salary DECIMAL NOT NULL,
-  department_id INT NOT NULL;
+  department_id INT,
   FOREIGN KEY (department_id)
-  REFERENCES department(id)
+  REFERENCES departments(id)
   ON DELETE SET NULL
 );
 
@@ -29,7 +29,7 @@ CREATE TABLE employee (
   manager_id INT,
   FOREIGN KEY (role_id)
   REFERENCES roles(id)
-  ON DELETE SET NULL
+  ON DELETE SET NULL,
   FOREIGN KEY (manager_id)
   REFERENCES employee(id)
   ON DELETE SET NULL
