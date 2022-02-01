@@ -41,6 +41,21 @@ function init() {
                     console.log('\n','\n',cTable.getTable(results),'\n');
                 });
                 init();
+            }else if (response.choice == 'Add a department'){
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter new department name',
+                        name: 'department',
+                    }
+                ])
+                .then((response) => {
+                    db.query(`INSERT INTO departments (department) VALUES ("${response.department}")`, function (err, results) {
+                    });
+                    db.query(`SELECT * FROM departments`, function (err, results) {
+                        console.log('\n','\n',cTable.getTable(results),'\n');
+                    });
+                });
             }
 
         });
