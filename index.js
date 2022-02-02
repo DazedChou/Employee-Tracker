@@ -26,22 +26,22 @@ function init() {
             // console.log('manager: ',manager);s
             // addEmployee();
             console.log(response.choice);
-            if (response.choice == 'View all departments'){
+            if (response.choice == 'View all departments') {
                 db.query(`SELECT * FROM departments`, function (err, results) {
-                    console.log('\n','\n',cTable.getTable(results),'\n');
+                    console.log('\n', '\n', cTable.getTable(results), '\n');
                 });
                 init();
-            } else if (response.choice == 'View all roles'){
+            } else if (response.choice == 'View all roles') {
                 db.query(`SELECT * FROM roles`, function (err, results) {
-                    console.log('\n','\n',cTable.getTable(results),'\n');
+                    console.log('\n', '\n', cTable.getTable(results), '\n');
                 });
                 init();
-            }else if (response.choice == 'View all employees'){
+            } else if (response.choice == 'View all employees') {
                 db.query(`SELECT * FROM employees`, function (err, results) {
-                    console.log('\n','\n',cTable.getTable(results),'\n');
+                    console.log('\n', '\n', cTable.getTable(results), '\n');
                 });
                 init();
-            }else if (response.choice == 'Add a department'){
+            } else if (response.choice == 'Add a department') {
                 inquirer.prompt([
                     {
                         type: 'input',
@@ -49,15 +49,42 @@ function init() {
                         name: 'department',
                     }
                 ])
-                .then((response) => {
-                    db.query(`INSERT INTO departments (department) VALUES ("${response.department}")`, function (err, results) {
+                    .then((response) => {
+                        db.query(`INSERT INTO departments (department) VALUES ("${response.department}")`, function (err, results) {
+                        });
+                        db.query(`SELECT * FROM departments`, function (err, results) {
+                            console.log('\n', '\n', cTable.getTable(results), '\n');
+                        });
+                        init();
                     });
-                    db.query(`SELECT * FROM departments`, function (err, results) {
-                        console.log('\n','\n',cTable.getTable(results),'\n');
+            } else if (response.choice == 'Add a role') {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter new role',
+                        name: 'title',
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter salary',
+                        name: 'salary',
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter department id',
+                        name: 'department_id',
+                    }
+                ])
+                    .then((response) => {
+                        db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${response.title}","${response.salary}","${response.department_id}")`, function (err, results) {
+                            console.log(results);
+                        });
+                        db.query(`SELECT * FROM roles`, function (err, results) {
+                            console.log('\n', '\n', cTable.getTable(results), '\n');
+                        });
+                        init();
                     });
-                });
             }
-
         });
 
 }
