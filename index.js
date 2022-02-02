@@ -52,9 +52,6 @@ function init() {
                     .then((response) => {
                         db.query(`INSERT INTO departments (department) VALUES ("${response.department}")`, function (err, results) {
                         });
-                        db.query(`SELECT * FROM departments`, function (err, results) {
-                            console.log('\n', '\n', cTable.getTable(results), '\n');
-                        });
                         init();
                     });
             } else if (response.choice == 'Add a role') {
@@ -79,8 +76,34 @@ function init() {
                         db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${response.title}","${response.salary}","${response.department_id}")`, function (err, results) {
                             console.log(results);
                         });
-                        db.query(`SELECT * FROM roles`, function (err, results) {
-                            console.log('\n', '\n', cTable.getTable(results), '\n');
+                        init();
+                    });
+            }else if (response.choice == 'Add an employee') {
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: 'Enter in first name',
+                        name: 'first_name',
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter in last name',
+                        name: 'last_name',
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter in role id',
+                        name: 'role_id',
+                    },
+                    {
+                        type: 'input',
+                        message: 'Enter in manager_id',
+                        name: 'manager_id',
+                    }
+                ])
+                    .then((response) => {
+                        db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${response.first_name}","${response.last_name}","${response.role_id}","${response.manager_id}")`, function (err, results) {
+                            console.log(results);
                         });
                         init();
                     });
