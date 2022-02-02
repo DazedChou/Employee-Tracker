@@ -51,29 +51,41 @@ function init() {
                         init();
                     });
             } else if (response.choice == 'Add a role') {
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        message: 'Enter new role',
-                        name: 'title',
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter salary',
-                        name: 'salary',
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter department id',
-                        name: 'department_id',
+                db.query(`SELECT * from departments;`, function (err,results) {
+                    const departmentsArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        departmentsArray.push(`${results[i].id} ${results[i].department}`);
                     }
-                ])
-                    .then((response) => {
-                        const {title, salary, id} = response;
-                        db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${title}","${salary}","${id}")`, function (err, results) {
+                    console.log(departmentsArray)
+                    inquirer.prompt([
+                        {
+                            type: 'input',
+                            message: 'Enter new role',
+                            name: 'title',
+                        },
+                        {
+                            type: 'input',
+                            message: 'Enter salary',
+                            name: 'salary',
+                        },
+                        {
+                            //CHANGE TO LIST
+                            type: 'list',
+                            message: 'Enter department id',
+                            name: 'department_id',
+                            choices: departmentsArray,
+                        }
+                    ])
+                        .then((response) => {
+                            console.log(response);
+                            var dept = response.department_id.split(" ");
+                            const {title, salary, id} = response;
+                            db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${title}","${salary}","${dept[0]}")`, function (err, results) {
+                            });
+                            init();
                         });
-                        init();
-                    });
+                })
+                
             } else if (response.choice == 'Add an employee') {
                 inquirer.prompt([
                     {
@@ -98,8 +110,8 @@ function init() {
                     }
                 ])
                     .then((response) => {
-                        console.log(response);
-                        const {first, last, role, id} = response;
+                        console.log(typeof response);
+                        const {first_name: first, last_name: last, role_id: role, manager_id: id} = response;
                         db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${role}","${id}")`, function (err, results) {
                         });
                         init();
@@ -138,6 +150,7 @@ function init() {
                                 var roleid = response.role_id.split(" ");
                                 console.log(roleid);
                                 db.query(`UPDATE employees SET role_id = ? WHERE first_name = ? AND last_name = ?`,[ roleid[0], name[0],name[1]])
+                                init();
                             })
 
 
