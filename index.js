@@ -78,7 +78,7 @@ function init() {
                         });
                         init();
                     });
-            }else if (response.choice == 'Add an employee') {
+            } else if (response.choice == 'Add an employee') {
                 inquirer.prompt([
                     {
                         type: 'input',
@@ -107,6 +107,46 @@ function init() {
                         });
                         init();
                     });
+            } else if (response.choice == 'Update employee role') {
+                db.query('SELECT * from employees', function (err, results) {
+                    // console.log(results);
+                    const employeeArray = [];
+                    const roleArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        employeeArray.push(`${results[i].first_name} ${results[i].last_name}`);
+                    }
+                    console.log(employeeArray);
+                    db.query(`SELECT * from roles;`, function (err,results) {
+                        for (let i = 0; i < results.length; i++) {
+                            roleArray.push(`${results[i].id} ${results[i].title}`);
+                        }
+                        console.log("role array: " , roleArray);
+
+                        inquirer.prompt([
+                            {
+                                type: "list",
+                                message: "Select an employee to update role",
+                                name: "employee",
+                                choices: employeeArray
+                            },
+                            {
+                                type: 'list',
+                                message: 'Select new employee role',
+                                name: 'role_id',
+                                choices: roleArray
+                            }
+                        ])
+                            .then((response) => {
+                                var name = response.employee.split(" ");
+                                var roleid = response.role_id.split(" ");
+                                console.log(roleid);
+                                db.query(`UPDATE employees SET role_id = ? WHERE first_name = ? AND last_name = ?`,[ roleid[0], name[0],name[1]])
+                            })
+
+
+                    })
+                   
+                });
             }
         });
 
