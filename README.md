@@ -13,7 +13,7 @@ You must first install MySQL from the link below.
 First, go into your MySQL shell using ```mysql -u root -p``` and enter in your password. Next, you want to run ```source ./db/schema.sql``` and  ``` source ./db/seeds.sql ```. Next, open your command terminal and run ```npm install``` in order to install the modules needed for this application to run properly. Then run ```node index.js``` to start the application, and respond to the given prompts.
 
 ### Demo
-* [Video Link]()
+* [Video Link](https://watch.screencastify.com/v/WT9Gg4KEYtw8xrDB3jAF)
 
 ## Built With
 
