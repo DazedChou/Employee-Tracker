@@ -56,7 +56,7 @@ function init() {
                     for (let i = 0; i < results.length; i++) {
                         departmentsArray.push(`${results[i].id} ${results[i].department}`);
                     }
-                    console.log(departmentsArray)
+                    // console.log(departmentsArray)
                     inquirer.prompt([
                         {
                             type: 'input',
@@ -77,7 +77,7 @@ function init() {
                         }
                     ])
                         .then((response) => {
-                            console.log(response);
+                            // console.log(response);
                             var dept = response.department_id.split(" ");
                             const { title, salary, id } = response;
                             db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${title}","${salary}","${dept[0]}")`, function (err, results) {
@@ -88,7 +88,7 @@ function init() {
 
             } else if (response.choice == 'Add an employee') {
                 db.query(`SELECT * from roles;`, function (err, results) {
-                    console.log(results);
+                    // console.log(results);
                     const rolesArray = [];
                     for (let i = 0; i < results.length; i++) {
                         rolesArray.push(`${results[i].id} ${results[i].title}`);
@@ -164,7 +164,7 @@ function init() {
                         for (let i = 0; i < results.length; i++) {
                             roleArray.push(`${results[i].id} ${results[i].title}`);
                         }
-                        console.log("role array: ", roleArray);
+                        // console.log("role array: ", roleArray);
 
                         inquirer.prompt([
                             {
