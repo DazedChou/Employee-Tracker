@@ -16,7 +16,7 @@ function init() {
                 type: 'list',
                 message: "Select an option below: ",
                 name: 'choice',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update employee role','Exit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update employee role', 'Exit']
             }
 
         ])
@@ -51,7 +51,7 @@ function init() {
                         init();
                     });
             } else if (response.choice == 'Add a role') {
-                db.query(`SELECT * from departments;`, function (err,results) {
+                db.query(`SELECT * from departments;`, function (err, results) {
                     const departmentsArray = [];
                     for (let i = 0; i < results.length; i++) {
                         departmentsArray.push(`${results[i].id} ${results[i].department}`);
@@ -79,43 +79,70 @@ function init() {
                         .then((response) => {
                             console.log(response);
                             var dept = response.department_id.split(" ");
-                            const {title, salary, id} = response;
+                            const { title, salary, id } = response;
                             db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${title}","${salary}","${dept[0]}")`, function (err, results) {
                             });
                             init();
                         });
                 })
-                
+
             } else if (response.choice == 'Add an employee') {
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        message: 'Enter in first name',
-                        name: 'first_name',
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter in last name',
-                        name: 'last_name',
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter in role id',
-                        name: 'role_id',
-                    },
-                    {
-                        type: 'input',
-                        message: 'Enter in manager_id',
-                        name: 'manager_id',
+                db.query(`SELECT * from roles;`, function (err, results) {
+                    console.log(results);
+                    const rolesArray = [];
+                    for (let i = 0; i < results.length; i++) {
+                        rolesArray.push(`${results[i].id} ${results[i].title}`);
                     }
-                ])
-                    .then((response) => {
-                        console.log(typeof response);
-                        const {first_name: first, last_name: last, role_id: role, manager_id: id} = response;
-                        db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${role}","${id}")`, function (err, results) {
-                        });
-                        init();
-                    });
+
+                    db.query(`SELECT * from employees`, function (err, results) {
+                        const employeeArray = [];
+                        for (let i = 0; i < results.length; i++) {
+                            employeeArray.push(`${results[i].id} ${results[i].first_name} ${results[i].last_name}`);
+                        }
+                        employeeArray.push("None");
+                        inquirer.prompt([
+                            {
+                                type: 'input',
+                                message: 'Enter in first name',
+                                name: 'first_name',
+                            },
+                            {
+                                type: 'input',
+                                message: 'Enter in last name',
+                                name: 'last_name',
+                            },
+                            {
+                                //CHANGE TO LIST
+                                type: 'list',
+                                message: 'Select your role',
+                                name: 'role_id',
+                                choices: rolesArray
+                            },
+                            {
+                                //CHANGE TO LiST
+                                type: 'list',
+                                message: 'Enter in manager_id',
+                                name: 'manager_id',
+                                choices: employeeArray
+                            }
+                        ])
+                            .then((response) => {
+                                console.log(response.manager_id);
+                                const { first_name: first, last_name: last, role_id: role, manager_id: id } = response;
+                                const roleID = role.split(" ")[0];
+                                const managerID = id.split(" ")[0];
+                                console.log("roleid: ",roleID);
+                                db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${roleID}","${managerID}")`, function (err, results) {
+                                });
+                                init();
+                            });
+
+                    })
+
+                })
+
+
+
             } else if (response.choice == 'Update employee role') {
                 db.query('SELECT * from employees', function (err, results) {
                     // console.log(results);
@@ -125,11 +152,11 @@ function init() {
                         employeeArray.push(`${results[i].first_name} ${results[i].last_name}`);
                     }
                     console.log(employeeArray);
-                    db.query(`SELECT * from roles;`, function (err,results) {
+                    db.query(`SELECT * from roles;`, function (err, results) {
                         for (let i = 0; i < results.length; i++) {
                             roleArray.push(`${results[i].id} ${results[i].title}`);
                         }
-                        console.log("role array: " , roleArray);
+                        console.log("role array: ", roleArray);
 
                         inquirer.prompt([
                             {
@@ -149,15 +176,15 @@ function init() {
                                 var name = response.employee.split(" ");
                                 var roleid = response.role_id.split(" ");
                                 console.log(roleid);
-                                db.query(`UPDATE employees SET role_id = ? WHERE first_name = ? AND last_name = ?`,[ roleid[0], name[0],name[1]])
+                                db.query(`UPDATE employees SET role_id = ? WHERE first_name = ? AND last_name = ?`, [roleid[0], name[0], name[1]])
                                 init();
                             })
 
 
                     })
-                   
+
                 });
-            }else if (response.choice == 'Exit'){
+            } else if (response.choice == 'Exit') {
                 process.kill(process.pid, 'SIGTERM')
             }
         });
