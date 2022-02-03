@@ -127,13 +127,21 @@ function init() {
                             }
                         ])
                             .then((response) => {
-                                console.log(response.manager_id);
+
                                 const { first_name: first, last_name: last, role_id: role, manager_id: id } = response;
                                 const roleID = role.split(" ")[0];
-                                const managerID = id.split(" ")[0];
-                                console.log("roleid: ",roleID);
-                                db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${roleID}","${managerID}")`, function (err, results) {
-                                });
+     
+                                if (id == "None"){
+                                    const managerID = null;
+                                    db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${roleID}",${managerID})`, function (err, results) {
+                                    });
+                                }else{
+                                    const managerID = id.split(" ")[0];
+                                    db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${first}","${last}","${roleID}","${managerID}")`, function (err, results) {
+                                    });
+                                }
+                                
+                                
                                 init();
                             });
 
